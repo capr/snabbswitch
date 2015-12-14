@@ -11,6 +11,6 @@ ip netns exec node$n ./l2tp.lua t0 e0 \
     000000$n 000000$n
 }
 start()   { run >/dev/null & }
-stop()    { pgrep -f "l2tp.lua .\*\?01:$n " | xargs kill -9; }
+stop()    { pgrep -f "l2tp.lua .*?01:$n " | xargs kill -9; }
 restart() { stop; start; }
 if [ "$1" ]; then $1; else stop; run; fi

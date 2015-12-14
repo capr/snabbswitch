@@ -135,7 +135,6 @@ local function update_config(s)
          assert(not ifs[iface.name], "duplicate interface name: "..iface.name)
          local phy_t = {
             name = iface.name,
-            realname = iface.realname,
             pci = iface.pci,
             mac = parsemac(iface.mac),
             vlans = {},
@@ -626,21 +625,25 @@ function run(args)
 
    --control plane
 
-   config.app(c, "ctl", Ctl)
-   config.app(c, "ctl_sock", unix.UnixSocket, {
-      filename = conf.control_sock,
-      listen = true,
-      mode = "packet",
-   })
-   config.link(c, "ctl_sock.tx -> ctl.rx")
+   if conf.control_sock then
+      config.app(c, "ctl", Ctl)
+      config.app(c, "ctl_sock", unix.UnixSocket, {
+         filename = conf.control_sock,
+         listen = true,
+         mode = "packet",
+      })
+      config.link(c, "ctl_sock.tx -> ctl.rx")
+   end
 
-   config.app(c, "punt", Punt)
-   config.app(c, "punt_sock", unix.UnixSocket, {
-      filename = conf.punt_sock,
-      listen = false,
-      mode = "packet",
-   })
-   config.link(c, "punt.tx -> punt_sock.rx")
+   if conf.punt_sock then
+      config.app(c, "punt", Punt)
+      config.app(c, "punt_sock", unix.UnixSocket, {
+         filename = conf.punt_sock,
+         listen = false,
+         mode = "packet",
+      })
+      config.link(c, "punt.tx -> punt_sock.rx")
+   end
 
    --data plane
 

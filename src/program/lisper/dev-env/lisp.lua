@@ -51,5 +51,5 @@ while true do
          end
       end
    end
-   S.sleep(1)
+   S.sleep(10)
 end
